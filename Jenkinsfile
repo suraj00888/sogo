@@ -53,9 +53,9 @@ pipeline {
              // Email notification using Gmail
             emailext subject: "Jenkins Pipeline Success",
                  body: "Terraform deployment executed successfully!",
-                 to: 'your-email@gmail.com',
-                 replyTo: 'your-email@gmail.com',
-                 from: 'your-email@gmail.com',
+                 to: 'surajmali430@gmail.com',
+                 replyTo: 'surajmali430@gmail.com',
+                 from: 'surajmali430@gmail.com',
                  mimeType: 'text/plain'
         }
         failure {
@@ -63,9 +63,9 @@ pipeline {
              // Email notification using Gmail
             emailext subject: "Jenkins Pipeline Failure",
                  body: "Terraform deployment failed!",
-                 to: 'your-email@gmail.com',
-                 replyTo: 'your-email@gmail.com',
-                 from: 'your-email@gmail.com',
+                 to: 'surajmali430@gmail.com',
+                 replyTo: 'surajmali430@gmail.com',
+                 from: 'surajmali430@gmail.com',
                  mimeType: 'text/plain'
         }
     }
