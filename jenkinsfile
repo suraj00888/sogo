@@ -1,28 +1,33 @@
 pipeline {
     agent any
 
+    environment {
+        AWS_ACCESS_KEY_ID = credentials('aws_access_key')
+        AWS_SECRET_ACCESS_KEY = credentials('aws_secret_key')
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/your-repo.git' // Replace with your repo
+                git branch: 'main', url: 'https://github.com/YOUR_USERNAME/terraform-ec2-pipeline.git'
             }
         }
 
-        stage('Build') {
+        stage('Terraform Init') {
             steps {
-                echo 'Building the application...'
+                sh 'terraform init'
             }
         }
 
-        stage('Test') {
+        stage('Terraform Plan') {
             steps {
-                echo 'Running tests...'
+                sh 'terraform plan'
             }
         }
 
-        stage('Deploy') {
+        stage('Terraform Apply') {
             steps {
-                echo 'Deploying the application...'
+                sh 'terraform apply -auto-approve'
             }
         }
     }
