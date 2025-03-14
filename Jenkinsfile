@@ -50,23 +50,40 @@ pipeline {
     post {
         success {
             echo 'Terraform deployment executed successfully!'
-             // Email notification using Gmail
-            emailext subject: "Jenkins Pipeline Success",
-                 body: "Terraform deployment executed successfully!",
-                 to: 'surajmali430@gmail.com',
-                 replyTo: 'surajmali430@gmail.com',
-                 from: 'surajmali430@gmail.com',
-                 mimeType: 'text/plain'
+            // Email notification for successful build
+            emailext subject: "Jenkins Pipeline Success - ${env.JOB_NAME}",
+                     body: """Hello Team,\n\n
+                     The Jenkins pipeline has completed successfully.\n
+                     Pipeline: ${env.JOB_NAME}\n
+                     Build Number: ${env.BUILD_NUMBER}\n
+                     Build URL: ${env.BUILD_URL}\n
+                     Status: SUCCESS ✅\n\n
+                     Regards,\n
+                     Jenkins""",
+                     to: 'surajmali430@gmail.com',
+                     replyTo: 'surajmali430@gmail.com',
+                     from: 'surajmali430@gmail.com',
+                     mimeType: 'text/plain'
         }
         failure {
             echo 'Terraform deployment failed!'
-             // Email notification using Gmail
-            emailext subject: "Jenkins Pipeline Failure",
-                 body: "Terraform deployment failed!",
-                 to: 'surajmali430@gmail.com',
-                 replyTo: 'surajmali430@gmail.com',
-                 from: 'surajmali430@gmail.com',
-                 mimeType: 'text/plain'
+            // Email notification for failed build
+            emailext subject: "Jenkins Pipeline Failure - ${env.JOB_NAME}",
+                     body: """Hello Team,\n\n
+                     The Jenkins pipeline has **FAILED** ❌.\n
+                     Pipeline: ${env.JOB_NAME}\n
+                     Build Number: ${env.BUILD_NUMBER}\n
+                     Build URL: ${env.BUILD_URL}\n
+                     Status: FAILURE ❌\n\n
+                     Please check the logs for more details.\n\n
+                     Regards,\n
+                     Jenkins""",
+                     to: 'surajmali430@gmail.com',
+                     replyTo: 'surajmali430@gmail.com',
+                     from: 'surajmali430@gmail.com',
+                     mimeType: 'text/plain'
         }
     }
 }
+
+   
