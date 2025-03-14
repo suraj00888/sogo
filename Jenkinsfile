@@ -50,9 +50,23 @@ pipeline {
     post {
         success {
             echo 'Terraform deployment executed successfully!'
+             // Email notification using Gmail
+            emailext subject: "Jenkins Pipeline Success",
+                 body: "Terraform deployment executed successfully!",
+                 to: 'your-email@gmail.com',
+                 replyTo: 'your-email@gmail.com',
+                 from: 'your-email@gmail.com',
+                 mimeType: 'text/plain'
         }
         failure {
             echo 'Terraform deployment failed!'
+             // Email notification using Gmail
+            emailext subject: "Jenkins Pipeline Failure",
+                 body: "Terraform deployment failed!",
+                 to: 'your-email@gmail.com',
+                 replyTo: 'your-email@gmail.com',
+                 from: 'your-email@gmail.com',
+                 mimeType: 'text/plain'
         }
     }
 }
