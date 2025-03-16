@@ -37,14 +37,6 @@ pipeline {
                 bat 'terraform apply -auto-approve tfplan'
             }
         }
-
-        stage('Terraform Destroy') {
-            steps {
-                input message: 'Do you want to destroy the Terraform infrastructure?'
-                bat 'terraform destroy -target=module.ec2.aws_instance.server -auto-approve'
-                bat 'terraform destroy -auto-approve'
-            }
-        }
     }
 
     post {
@@ -85,5 +77,3 @@ pipeline {
         }
     }
 }
-
-   
