@@ -6,6 +6,7 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_key') // Replace with your Jenkins credential ID
         SES_SENDER = 'surajmali430@gmail.com'  // Must be a verified email in AWS SES
         SES_RECIPIENT = 'surajmali430@gmail.com'
+        SMTP_SERVER = 'email-smtp.us-east-1.amazonaws.com'  // Change based on AWS region
     }
 
     stages {
@@ -52,40 +53,44 @@ pipeline {
     post {
         success {
             echo 'Terraform deployment executed successfully!'
-            // Email notification for successful build
-            emailext subject: "Jenkins Pipeline Success - ${env.JOB_NAME}",
-                     body: """Hello Team,\n\n
-                     The Jenkins pipeline has completed successfully.\n
-                     Pipeline: ${env.JOB_NAME}\n
-                     Build Number: ${env.BUILD_NUMBER}\n
-                     Build URL: ${env.BUILD_URL}\n
-                     Status: SUCCESS ✅\n\n
-                     Regards,\n
-                     Jenkins""",
-                     to: 'surajmali430@gmail.com',
-                     replyTo: 'surajmali430@gmail.com',
-                     from: 'surajmali430@gmail.com',
-                     mimeType: 'text/plain'
+            script {
+                emailext(
+                    subject: "Jenkins Pipeline Success - ${env.JOB_NAME}",
+                    body: """Hello Team,<br><br>
+                    The Jenkins pipeline has completed successfully.<br>
+                    <b>Pipeline:</b> ${env.JOB_NAME}<br>
+                    <b>Build Number:</b> ${env.BUILD_NUMBER}<br>
+                    <b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a><br>
+                    <b>Status:</b> <span style="color:green;"><b>SUCCESS ✅</b></span><br><br>
+                    Regards,<br>
+                    Jenkins""",
+                    to: "${env.SES_RECIPIENT}",
+                    replyTo: "${env.SES_SENDER}",
+                    from: "${env.SES_SENDER}",
+                    mimeType: 'text/html'
+                )
+            }
         }
         failure {
             echo 'Terraform deployment failed!'
-            // Email notification for failed build
-            emailext subject: "Jenkins Pipeline Failure - ${env.JOB_NAME}",
-                     body: """Hello Team,\n\n
-                     The Jenkins pipeline has **FAILED** ❌.\n
-                     Pipeline: ${env.JOB_NAME}\n
-                     Build Number: ${env.BUILD_NUMBER}\n
-                     Build URL: ${env.BUILD_URL}\n
-                     Status: FAILURE ❌\n\n
-                     Please check the logs for more details.\n\n
-                     Regards,\n
-                     Jenkins""",
-                     to: 'surajmali430@gmail.com',
-                     replyTo: 'surajmali430@gmail.com',
-                     from: 'surajmali430@gmail.com',
-                     mimeType: 'text/plain'
+            script {
+                emailext(
+                    subject: "Jenkins Pipeline Failure - ${env.JOB_NAME}",
+                    body: """Hello Team,<br><br>
+                    The Jenkins pipeline has <b style="color:red;">FAILED ❌</b>.<br>
+                    <b>Pipeline:</b> ${env.JOB_NAME}<br>
+                    <b>Build Number:</b> ${env.BUILD_NUMBER}<br>
+                    <b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a><br>
+                    <b>Status:</b> <span style="color:red;"><b>FAILURE ❌</b></span><br><br>
+                    Please check the logs for more details.<br><br>
+                    Regards,<br>
+                    Jenkins""",
+                    to: "${env.SES_RECIPIENT}",
+                    replyTo: "${env.SES_SENDER}",
+                    from: "${env.SES_SENDER}",
+                    mimeType: 'text/html'
+                )
+            }
         }
     }
 }
-
-   
