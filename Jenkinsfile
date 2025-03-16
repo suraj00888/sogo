@@ -4,6 +4,8 @@ pipeline {
     environment {
         AWS_ACCESS_KEY_ID = credentials('aws_access_key') // Replace with your Jenkins credential ID
         AWS_SECRET_ACCESS_KEY = credentials('aws_secret_key') // Replace with your Jenkins credential ID
+        SES_SENDER = 'surajmali430@gmail.com'  // Must be a verified email in AWS SES
+        SES_RECIPIENT = 'surajmali430@gmail.com'
     }
 
     stages {
