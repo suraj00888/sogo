@@ -18,7 +18,12 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                bat 'terraform init'
+                script {
+                    def startTime = System.currentTimeMillis()
+                    bat 'terraform init'
+                    def endTime = System.currentTimeMillis()
+                    env.INIT_TIME = (endTime - startTime) / 1000 + " seconds"
+                }
             }
         }
 
@@ -30,14 +35,24 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                bat 'terraform plan -out=tfplan'
+                script {
+                    def startTime = System.currentTimeMillis()
+                    bat 'terraform plan -out=tfplan'
+                    def endTime = System.currentTimeMillis()
+                    env.PLAN_TIME = (endTime - startTime) / 1000 + " seconds"
+                }
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                input message: 'Do you want to apply the Terraform changes?'
-                bat 'terraform apply -auto-approve tfplan'
+                script {
+                    input message: 'Do you want to apply the Terraform changes?'
+                    def startTime = System.currentTimeMillis()
+                    bat 'terraform apply -auto-approve tfplan'
+                    def endTime = System.currentTimeMillis()
+                    env.APPLY_TIME = (endTime - startTime) / 1000 + " seconds"
+                }
             }
         }
 
@@ -62,6 +77,13 @@ pipeline {
                     <b>Build Number:</b> ${env.BUILD_NUMBER}<br>
                     <b>Build URL:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a><br>
                     <b>Status:</b> <span style="color:green;"><b>SUCCESS ✅</b></span><br><br>
+                    <b>Execution Times:</b><br>
+                    <table border="1" cellspacing="0" cellpadding="5">
+                        <tr><th>Stage</th><th>Time Taken</th></tr>
+                        <tr><td>Terraform Init</td><td>${env.INIT_TIME}</td></tr>
+                        <tr><td>Terraform Plan</td><td>${env.PLAN_TIME}</td></tr>
+                        <tr><td>Terraform Apply</td><td>${env.APPLY_TIME}</td></tr>
+                    </table><br><br>
                     Regards,<br>
                     Jenkins""",
                     to: "${env.SES_RECIPIENT}",
